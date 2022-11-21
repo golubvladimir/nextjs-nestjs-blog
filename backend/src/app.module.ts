@@ -31,11 +31,20 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
         entities: [
-          '**/*.model.ts'
+          `${ process.cwd() }/**/*.model.js`
         ],
-        synchronize: true
+        synchronize: true,
       })
-    })
+    }),
+
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      debug: true,
+      playground: true,
+      autoSchemaFile: join(process.cwd(), 'src/scheme.gql')
+    }),
+
+    ArticlesModule,
   ],
 })
 export class AppModule {}
