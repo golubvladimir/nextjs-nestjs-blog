@@ -3,21 +3,39 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { ArticlesModule } from './articles/articles.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
-    ArticlesModule,
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      debug: true,
-      playground: true,
-      autoSchemaFile: join(process.cwd(), 'src/scheme.gql')
+    /**
+     * Config @nestjs/config
+     */
     ConfigModule.forRoot({
       envFilePath: [
         `${ process.cwd() }/config/.development.env`
       ]
     }),
+
+    /**
+     * Config @nestjs/typeorm
+     */
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'mysql',
+        host: configService.get('DATABASE_HOST'),
+        port: +configService.get('DATABASE_PORT'),
+        username: configService.get('DATABASE_USER'),
+        password: configService.get('DATABASE_PASSWORD'),
+        database: configService.get('DATABASE_NAME'),
+        entities: [
+          '**/*.model.ts'
+        ],
+        synchronize: true
+      })
+    })
   ],
 })
 export class AppModule {}
