@@ -37,6 +37,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       })
     }),
 
+    /**
+     * Config @nestjs/graphql
+     */
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       debug: true,

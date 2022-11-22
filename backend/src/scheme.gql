@@ -17,4 +17,5 @@ scalar DateTime
 
 type Query {
   getArticleByID(id: String!): ArticleModel!
+  getArticlesAll(page: Int = 1, limit: Int = 15): [ArticleModel!]!
 }

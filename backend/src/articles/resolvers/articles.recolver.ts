@@ -22,9 +22,9 @@ export class ArticlesRecolver {
     return article;
   }
 
-  @Query(returns => Array<ArticleModel>)
-  async getArticlesAll(@Args() articlesArgs: ArticlesArgs): Promise<ArticleModel[]> {
-    return await this.articlesService.findAll(ArticlesArgs)
+  @Query(returns => [ArticleModel])
+  getArticlesAll(@Args() articlesArgs: ArticlesArgs): Promise<ArticleModel[]> {
+    return this.articlesService.findAll(articlesArgs)
   }
 
 }
